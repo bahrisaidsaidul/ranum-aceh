@@ -123,10 +123,10 @@ export function getSeedData() {
         region: 'Sabang',
         description: 'Pulau vulkanik di ujung barat Indonesia dengan hutan tropis rimbun, teluk biru jernih, dan Tugu Nol Kilometer Nusantara.',
         descriptionEn: 'A volcanic island at Indonesia’s westernmost point, home to lush rainforest, crystal bays, and the Zero Kilometer Monument.',
-        imageUrl: './images/pantai-iboih-sabang.jpg',
+        imageUrl: 'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=1000&q=80',
         gallery: [
-          './images/pantai-iboih-sabang.jpg',
-          './images/pantai-lampuuk.jpg'
+          'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?auto=format&fit=crop&w=1000&q=80',
+          './images/pantai-iboih-sabang.jpg'
         ],
         address: 'Kota Sabang, Pulau Weh, Aceh',
         mapsUrl: 'https://www.google.com/maps/search/?api=1&query=5.8692,95.3204',
@@ -270,9 +270,9 @@ export function getSeedData() {
         region: 'Bener Meriah',
         description: 'Masjid agung kebanggaan Kabupaten Bener Meriah dengan arsitektur anggun, halaman luas, dan suasana ibadah yang khusyuk.',
         descriptionEn: 'The grand mosque of Bener Meriah, admired for its graceful architecture, spacious grounds, and serene atmosphere for prayer.',
-        imageUrl: './images/masjid-baiturrahman.jpg',
+        imageUrl: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1000&q=80',
         gallery: [
-          './images/masjid-baiturrahman.jpg',
+          'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&w=1000&q=80',
           './images/pantan-terong.jpg'
         ],
         address: 'Simpang Tiga Redelong, Kec. Bukit, Kabupaten Bener Meriah',
@@ -389,7 +389,7 @@ export function getSeedData() {
         region: 'Aceh Tengah',
         price: 40000,
         description: 'Hidangan tradisional Gayo berkuah asam pedas segar dari ikan depik endemik Danau Laut Tawar.',
-        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
         halalStatus: 'pending_verification',
         verificationSource: 'Menunggu verifikasi dokumen UMKM Gayo #REQ-2026-045',
         contact: '6281200001005'

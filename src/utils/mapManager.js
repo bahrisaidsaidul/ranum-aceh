@@ -21,8 +21,8 @@ export function updateMapInfoPanelHtml(dest, { t, catLabel, destDesc }) {
   if (!dest) return `<p>${t('empty_title')}</p>`;
   const coords = dest.lat && dest.lng ? `${Number(dest.lat).toFixed(4)}, ${Number(dest.lng).toFixed(4)}` : 'Aceh';
   return `
-    <div style="aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:var(--sand);">
-      <img src="${escapeHtml(dest.imageUrl)}" alt="${escapeHtml(dest.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="__ranumImgFallback(this, '${escapeHtml(dest.name)}')" />
+    <div class="map-info-img-wrap">
+      <img src="${escapeHtml(dest.imageUrl)}" alt="${escapeHtml(dest.name)}" onerror="__ranumImgFallback(this, '${escapeHtml(dest.name)}')" />
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
       <span class="badge badge-forest">${escapeHtml(catLabel(dest.category))}</span>
@@ -149,7 +149,7 @@ export function initMaps(state, helpers) {
             'Peta Detail (Esri)': esriStreetLayer
           },
           null,
-          { position: 'topright', collapsed: false }
+          { position: 'topright', collapsed: window.innerWidth <= 768 }
         )
         .addTo(mainLeafletMap);
 

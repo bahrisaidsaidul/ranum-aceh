@@ -11,6 +11,8 @@ html {
   font-size: 16px;
   background-color: var(--ivory);
   color: var(--charcoal);
+  max-width: 100%;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
