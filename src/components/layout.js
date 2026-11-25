@@ -130,12 +130,11 @@ export function renderFooter({ t }) {
           </ul>
         </div>
         <div>
-          <div class="footer-title">Akses Peran</div>
+          <div class="footer-title">Akun &amp; Mitra</div>
           <ul class="footer-links">
-            <li><a href="#auth" data-route="auth">${t('nav_login')} (4 Role Demo)</a></li>
+            <li><a href="#auth" data-route="auth">${t('nav_login')}</a></li>
             <li><a href="#partner" data-route="partner">${t('nav_partner')}</a></li>
-            <li><a href="#admin" data-route="admin">${t('nav_admin')}</a></li>
-            <li><button type="button" id="footerResetDemoBtn">${t('reset_demo')}</button></li>
+            <li><a href="#saved" data-route="saved">${t('nav_saved')}</a></li>
           </ul>
         </div>
       </div>

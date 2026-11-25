@@ -7,12 +7,46 @@ export const ROLES = {
   ADMIN: 'admin'
 };
 
+const PRIMARY_OWNER_EMAIL = 'bahrisaidsaidul@gmail.com';
+
+export function getEnvAdminEmails() {
+  const raw = import.meta.env.VITE_ADMIN_EMAILS || '';
+  return raw
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export function createAuthService(state) {
+  function getAllAdminEmails() {
+    const dynamic = Array.isArray(state.data.adminEmails) ? state.data.adminEmails : [];
+    return Array.from(
+      new Set([PRIMARY_OWNER_EMAIL, ...getEnvAdminEmails(), ...dynamic].map((e) => String(e).trim().toLowerCase()).filter(Boolean))
+    );
+  }
+
+  function isWhitelistedAdminEmail(email) {
+    const clean = String(email || '').trim().toLowerCase();
+    if (!clean) return false;
+    return getAllAdminEmails().includes(clean);
+  }
+
   return {
+    getAllAdminEmails,
+    isWhitelistedAdminEmail,
+    isPrimaryOwner(email) {
+      return String(email || '').trim().toLowerCase() === PRIMARY_OWNER_EMAIL;
+    },
+
     getCurrentUser() {
       const uid = state.data.preferences.currentUserId;
       if (!uid) return null;
-      return state.data.users.find((u) => u.id === uid) || null;
+      const user = state.data.users.find((u) => u.id === uid) || null;
+      if (user && isWhitelistedAdminEmail(user.email) && user.role !== ROLES.ADMIN) {
+        user.role = ROLES.ADMIN;
+        StorageService.save(state.data);
+      }
+      return user;
     },
 
     getRole() {
@@ -28,22 +62,63 @@ export function createAuthService(state) {
       return allowedRoles.includes(this.getRole());
     },
 
+    addAdminAccount({ name, email, password }) {
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      if (!cleanEmail || !cleanEmail.includes('@')) {
+        return { ok: false, error: 'Masukkan alamat email yang valid.' };
+      }
+      if (!Array.isArray(state.data.adminEmails)) state.data.adminEmails = [];
+      if (!state.data.adminEmails.includes(cleanEmail)) {
+        state.data.adminEmails.push(cleanEmail);
+      }
+
+      let existing = state.data.users.find((u) => u.email.toLowerCase() === cleanEmail);
+      if (existing) {
+        existing.role = ROLES.ADMIN;
+        if (name && name.trim()) existing.name = name.trim();
+        if (password && password.length >= 6) existing.password = password;
+      } else {
+        state.data.users.unshift({
+          id: 'user-adm-' + Date.now(),
+          name: (name || cleanEmail.split('@')[0]).trim(),
+          email: cleanEmail,
+          password: password && password.length >= 6 ? password : null,
+          role: ROLES.ADMIN,
+          region: 'Banda Aceh',
+          joinedAt: new Date().toISOString().slice(0, 10)
+        });
+      }
+      StorageService.save(state.data);
+      return { ok: true };
+    },
+
+    removeAdminEmail(email) {
+      const cleanEmail = String(email || '').trim().toLowerCase();
+      if (cleanEmail === PRIMARY_OWNER_EMAIL) {
+        return { ok: false, error: 'Owner Admin utama tidak dapat dihapus.' };
+      }
+      if (Array.isArray(state.data.adminEmails)) {
+        state.data.adminEmails = state.data.adminEmails.filter((e) => e !== cleanEmail);
+      }
+      const user = state.data.users.find((u) => u.email.toLowerCase() === cleanEmail);
+      if (user) {
+        user.role = ROLES.TRAVELER;
+      }
+      StorageService.save(state.data);
+      return { ok: true };
+    },
+
     login(email, password) {
       const cleanEmail = String(email || '').trim().toLowerCase();
       const user = state.data.users.find(
-        (u) => u.email.toLowerCase() === cleanEmail && u.password === password
+        (u) => u.email.toLowerCase() === cleanEmail && u.password && u.password === password
       );
       if (!user) {
         return { ok: false, error: 'Email atau kata sandi tidak sesuai.' };
       }
-      state.data.preferences.currentUserId = user.id;
-      StorageService.save(state.data);
-      return { ok: true, user };
-    },
-
-    loginDemo(role) {
-      const user = state.data.users.find((u) => u.role === role);
-      if (!user) return { ok: false, error: 'Akun demo tidak ditemukan.' };
+      if (isWhitelistedAdminEmail(user.email)) {
+        user.role = ROLES.ADMIN;
+      }
       state.data.preferences.currentUserId = user.id;
       StorageService.save(state.data);
       return { ok: true, user };
@@ -58,15 +133,20 @@ export function createAuthService(state) {
       if (exists) {
         return { ok: false, error: 'Email sudah terdaftar. Silakan masuk.' };
       }
-      const safeRole = role === ROLES.PARTNER ? ROLES.PARTNER : ROLES.TRAVELER;
+      const resolvedRole = isWhitelistedAdminEmail(cleanEmail)
+        ? ROLES.ADMIN
+        : role === ROLES.PARTNER
+          ? ROLES.PARTNER
+          : ROLES.TRAVELER;
+
       const newUser = {
         id: 'user-' + Date.now(),
         name: name.trim(),
         email: cleanEmail,
         password,
-        role: safeRole,
+        role: resolvedRole,
         region: region || 'Banda Aceh',
-        businessName: safeRole === ROLES.PARTNER ? (businessName || name).trim() : undefined,
+        businessName: resolvedRole === ROLES.PARTNER ? (businessName || name).trim() : undefined,
         joinedAt: new Date().toISOString().slice(0, 10)
       };
       state.data.users.push(newUser);
@@ -87,9 +167,16 @@ export function createAuthService(state) {
         user.provider = 'google';
         if (googleId) user.googleId = googleId;
         if (picture) user.avatarUrl = picture;
+        if (isWhitelistedAdminEmail(cleanEmail)) {
+          user.role = ROLES.ADMIN;
+        }
       } else {
         isNew = true;
-        const safeRole = role === ROLES.PARTNER ? ROLES.PARTNER : ROLES.TRAVELER;
+        const resolvedRole = isWhitelistedAdminEmail(cleanEmail)
+          ? ROLES.ADMIN
+          : role === ROLES.PARTNER
+            ? ROLES.PARTNER
+            : ROLES.TRAVELER;
         user = {
           id: 'user-g-' + Date.now(),
           googleId: googleId || 'gid-' + Date.now(),
@@ -98,9 +185,9 @@ export function createAuthService(state) {
           email: cleanEmail,
           password: null,
           avatarUrl: picture || null,
-          role: safeRole,
+          role: resolvedRole,
           region: 'Banda Aceh',
-          businessName: safeRole === ROLES.PARTNER ? (name || 'Mitra UMKM Aceh').trim() : undefined,
+          businessName: resolvedRole === ROLES.PARTNER ? (name || 'Mitra UMKM Aceh').trim() : undefined,
           joinedAt: new Date().toISOString().slice(0, 10)
         };
         state.data.users.push(user);

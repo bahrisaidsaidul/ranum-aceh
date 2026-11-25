@@ -17,8 +17,7 @@ export function renderPartnerPage(state, authService, dataService, helpers) {
             <h3>Masuk sebagai Mitra untuk Membuka Portal Ini</h3>
             <p>Portal Mitra memungkinkan pemilik kuliner UMKM dan penginapan ramah Muslim mengelola listing, mengajukan verifikasi halal, serta menanggapi inquiry wisatawan.</p>
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-              <button type="button" class="btn btn-primary" data-action="demo-login" data-role="${ROLES.PARTNER}">Masuk Demo Mitra UMKM</button>
-              <button type="button" class="btn btn-outline" data-route="auth">Halaman Login</button>
+              <button type="button" class="btn btn-primary" data-route="auth">Masuk / Daftar Mitra</button>
             </div>
           </div>
         </div>

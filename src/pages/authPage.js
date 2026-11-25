@@ -16,9 +16,9 @@ export function renderAuthPage(state, authService, { t }) {
       <div class="container">
         <div class="section-header" style="margin-bottom:28px;">
           <div>
-            <div class="section-eyebrow">${ICONS.acehMotif} MULTI-ROLE &amp; GOOGLE AUTH</div>
+            <div class="section-eyebrow">${ICONS.acehMotif} AKUN RANUM</div>
             <h1 class="section-title" data-split-words>${t('auth_title')}</h1>
-            <p class="section-subtitle">${t('auth_sub')}</p>
+            <p class="section-subtitle">Masuk dengan akun Google atau daftar menggunakan email untuk menyimpan rencana perjalanan, ulasan, dan layanan UMKM Anda.</p>
           </div>
         </div>
 
@@ -47,17 +47,11 @@ export function renderAuthPage(state, authService, { t }) {
             <div style="display:flex;flex-direction:column;gap:8px;">
               ${
                 googleLive
-                  ? `<div id="googleSignInMount" style="display:flex;justify-content:center;align-items:center;min-height:46px;"></div>
-                    <p style="font-size:0.75rem;color:var(--sage);text-align:center;">
-                      Google OAuth Live aktif · Pastikan <code>${escapeHtml(window.location.origin)}</code> terdaftar di Authorized JavaScript origins Google Cloud.
-                    </p>`
+                  ? `<div id="googleSignInMount" style="display:flex;justify-content:center;align-items:center;min-height:46px;"></div>`
                   : `<button type="button" class="btn-google" data-action="google-login-picker">
                       ${GOOGLE_LOGO_SVG}
                       <span>Lanjutkan dengan Google</span>
-                    </button>
-                    <p style="font-size:0.76rem;color:var(--muted);text-align:center;">
-                      Mode Simulasi Google Picker aktif · Isi <code>VITE_GOOGLE_CLIENT_ID</code> di <code>.env</code> untuk OAuth Google Live.
-                    </p>`
+                    </button>`
               }
             </div>
 
@@ -68,14 +62,13 @@ export function renderAuthPage(state, authService, { t }) {
                 ? `<form id="loginForm" style="display:flex;flex-direction:column;gap:14px;">
                     <div class="field-group">
                       <label for="loginEmail">Email</label>
-                      <input class="input" id="loginEmail" name="email" type="email" placeholder="wisatawan@ranum.id" required />
+                      <input class="input" id="loginEmail" name="email" type="email" placeholder="nama@email.com" required />
                     </div>
                     <div class="field-group">
                       <label for="loginPass">Kata Sandi</label>
                       <input class="input" id="loginPass" name="password" type="password" placeholder="••••••••" required />
                     </div>
                     <button type="submit" class="btn btn-primary">Masuk Sekarang</button>
-                    <p style="font-size:0.82rem;color:var(--muted);">Kata sandi semua akun demo: <code>password123</code></p>
                   </form>`
                 : `<form id="registerForm" style="display:flex;flex-direction:column;gap:14px;">
                     <div class="field-group">
@@ -108,45 +101,26 @@ export function renderAuthPage(state, authService, { t }) {
             }
           </div>
 
-          <!-- Right: 1-Click Demo Role Switcher -->
-          <div class="info-box">
-            <h2 style="font-size:1.45rem;">Akses Cepat 4 Peran (Demo)</h2>
-            <p style="font-size:0.88rem;color:var(--muted);">Klik tombol di bawah untuk langsung mencoba pengalaman setiap tipe pengguna tanpa mengetik ulang kredensial.</p>
+          <!-- Right: Clean Role Benefits Card (No Demo Accounts) -->
+          <div class="info-box" style="background:linear-gradient(155deg, var(--sand-light) 0%, var(--white) 100%);">
+            <span class="badge badge-forest" style="align-self:flex-start;">Ekosistem RANUM Aceh</span>
+            <h2 style="font-size:1.5rem;">Satu Akun untuk Perjalanan &amp; Mitra Lokal</h2>
+            <p style="font-size:0.9rem;color:var(--muted);">Bergabung dengan RANUM untuk pengalaman wisata alam dan halal Aceh yang lebih personal dan terpercaya.</p>
 
-            <div class="demo-role-card">
-              <div>
-                <span class="role-pill role-traveler">Wisatawan</span>
-                <div style="font-weight:600;margin-top:6px;">Aisyah Rahma</div>
-                <div style="font-size:0.8rem;color:var(--muted);">wisatawan@ranum.id · Favorit, Itinerary, Review &amp; Inquiry</div>
-              </div>
-              <button type="button" class="btn btn-primary btn-sm" data-action="demo-login" data-role="${ROLES.TRAVELER}">Masuk</button>
+            <div class="demo-role-card" style="flex-direction:column;align-items:flex-start;gap:6px;">
+              <span class="role-pill role-traveler">Wisatawan</span>
+              <div style="font-weight:600;">Rencana Perjalanan Personal</div>
+              <div style="font-size:0.84rem;color:var(--muted);">Simpan destinasi favorit, susun itinerary 1–5 hari, tulis ulasan &amp; rating, serta pantau riwayat inquiry Anda.</div>
             </div>
 
-            <div class="demo-role-card">
-              <div>
-                <span class="role-pill role-partner">Mitra UMKM</span>
-                <div style="font-weight:600;margin-top:6px;">Koperasi Kopi &amp; Kuliner Gayo</div>
-                <div style="font-size:0.8rem;color:var(--muted);">mitra@ranum.id · Kelola Listing, Ajukan Halal, Respons Inquiry</div>
-              </div>
-              <button type="button" class="btn btn-secondary btn-sm" data-action="demo-login" data-role="${ROLES.PARTNER}">Masuk</button>
+            <div class="demo-role-card" style="flex-direction:column;align-items:flex-start;gap:6px;">
+              <span class="role-pill role-partner">Mitra UMKM &amp; Penginapan</span>
+              <div style="font-weight:600;">Portal Bisnis Ramah Muslim</div>
+              <div style="font-size:0.84rem;color:var(--muted);">Daftarkan kuliner lokal atau penginapan Anda, ajukan verifikasi sertifikasi halal, dan kelola inquiry wisatawan.</div>
             </div>
 
-            <div class="demo-role-card">
-              <div>
-                <span class="role-pill role-admin">Admin</span>
-                <div style="font-weight:600;margin-top:6px;">Teuku Farhan (Administrator)</div>
-                <div style="font-size:0.8rem;color:var(--muted);">admin@ranum.id · CRUD Penuh, Persetujuan Halal, Kelola User</div>
-              </div>
-              <button type="button" class="btn btn-outline btn-sm" data-action="demo-login" data-role="${ROLES.ADMIN}">Masuk</button>
-            </div>
-
-            <div class="demo-role-card">
-              <div>
-                <span class="role-pill role-guest">Tamu (Guest)</span>
-                <div style="font-weight:600;margin-top:6px;">Mode Publik Tanpa Login</div>
-                <div style="font-size:0.8rem;color:var(--muted);">Jelajah destinasi, peta, kuliner, penginapan &amp; kalkulator</div>
-              </div>
-              <button type="button" class="btn btn-ghost btn-sm" data-action="logout">Mode Tamu</button>
+            <div class="notice-box" style="margin-top:4px;">
+              <strong>Pengelola / Administrator:</strong> Akses Admin diaktifkan secara otomatis melalui <em>Email Whitelist</em> resmi tanpa menampilkan akun demo di publik.
             </div>
           </div>
         </div>
@@ -154,4 +128,3 @@ export function renderAuthPage(state, authService, { t }) {
     </section>
   `;
 }
-

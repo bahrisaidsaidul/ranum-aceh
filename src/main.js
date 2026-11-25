@@ -388,14 +388,33 @@ function bindPageSpecificEvents() {
     showToast('Semua favorit telah dihapus.');
   });
 
-  // Admin Reset & User Role Switcher
+  // Admin Reset, Add Admin Form & User Role Switcher
   document.getElementById('adminResetDemoBtn')?.addEventListener('click', handleResetDemo);
+
+  document.getElementById('addAdminForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const res = authService.addAdminAccount({
+      name: fd.get('name'),
+      email: fd.get('email'),
+      password: fd.get('password')
+    });
+    if (!res.ok) return showToast(res.error, 'error');
+    showToast('Admin baru berhasil ditambahkan!');
+    renderCurrentView(false);
+  });
+
   document.querySelectorAll('.admin-user-role-select').forEach((sel) => {
     sel.addEventListener('change', (e) => {
       const uid = e.target.dataset.userId;
+      const targetUser = state.data.users.find((u) => u.id === uid);
       dataService.update('users', uid, { role: e.target.value });
+      if (targetUser && e.target.value === ROLES.ADMIN) {
+        authService.addAdminAccount({ name: targetUser.name, email: targetUser.email });
+      }
       showToast('Peran pengguna berhasil diperbarui.');
       renderNavigation(state, authService, dataService, helpers);
+      renderCurrentView(false);
     });
   });
 }
@@ -435,16 +454,6 @@ document.addEventListener('click', (e) => {
         const nextRoute = res.user.role === ROLES.ADMIN ? 'admin' : res.user.role === ROLES.PARTNER ? 'partner' : 'home';
         navigate(nextRoute);
       });
-      break;
-    }
-    case 'demo-login': {
-      const role = target.dataset.role;
-      const res = authService.loginDemo(role);
-      if (res.ok) {
-        showToast(`Masuk sebagai ${res.user.name} (${role.toUpperCase()})`);
-        const nextRoute = role === ROLES.ADMIN ? 'admin' : role === ROLES.PARTNER ? 'partner' : 'home';
-        navigate(nextRoute);
-      }
       break;
     }
     case 'logout':
@@ -656,6 +665,16 @@ document.addEventListener('click', (e) => {
       dataService.reviewHalalVerification(id, decision);
       renderCurrentView(false);
       showToast(decision === 'approve' ? 'Sertifikasi Halal disetujui (Certified)!' : 'Pengajuan dikembalikan ke Belum Diverifikasi.');
+      break;
+    }
+    case 'admin-remove-email': {
+      const em = target.dataset.email;
+      if (confirm(`Cabut akses Admin dari ${em}?`)) {
+        const res = authService.removeAdminEmail(em);
+        if (!res.ok) return showToast(res.error, 'error');
+        showToast(`Akses Admin ${em} telah dicabut.`);
+        renderCurrentView(false);
+      }
       break;
     }
   }

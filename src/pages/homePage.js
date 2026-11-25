@@ -33,8 +33,10 @@ export function renderHomePage(state, dataService, helpers) {
               <h1 class="hero-title" data-split-words data-hero-heading>${t('hero_title')}</h1>
               <p class="hero-desc">${t('hero_desc')}</p>
               <form class="hero-search" id="heroSearchForm">
-                <span style="padding-left:12px;color:var(--sage);display:flex;">${ICONS.search}</span>
-                <input type="text" id="heroSearchInput" placeholder="${t('hero_search_ph')}" aria-label="${t('hero_search_ph')}" />
+                <div class="hero-search-row">
+                  <span class="hero-search-icon" aria-hidden="true">${ICONS.search}</span>
+                  <input type="text" id="heroSearchInput" placeholder="${t('hero_search_ph')}" aria-label="${t('hero_search_ph')}" />
+                </div>
                 <button type="submit" class="btn btn-primary">${t('hero_search_btn')}</button>
               </form>
             </div>
@@ -42,7 +44,7 @@ export function renderHomePage(state, dataService, helpers) {
             <div class="hero-glass-stats">
               <div class="hero-stat-pill"><strong>${state.data.destinations.length}+</strong><span>${t('stat_dest')}</span></div>
               <div class="hero-stat-pill"><strong>5</strong><span>${t('stat_regions')}</span></div>
-              <div class="hero-stat-pill"><strong>4 Role</strong><span>Multi-User</span></div>
+              <div class="hero-stat-pill"><strong>100%</strong><span>${t('stat_halal')}</span></div>
             </div>
           </div>
         </div>
@@ -173,29 +175,23 @@ export function renderHomePage(state, dataService, helpers) {
           </div>
           <button type="button" class="btn btn-primary" data-route="auth">${t('nav_login')} ${ICONS.arrowRight}</button>
         </div>
-        <div class="grid grid-4">
+        <div class="grid grid-3">
           <div class="role-ecosystem-card" data-motion-card>
-            <span class="role-pill role-guest" style="align-self:flex-start;">Tamu / Guest</span>
+            <span class="role-pill role-guest" style="align-self:flex-start;">Tamu / Publik</span>
             <h3 style="font-size:1.25rem;">Eksplorasi Bebas</h3>
-            <p style="font-size:0.88rem;color:var(--muted);">Jelajahi destinasi, peta interaktif, kuliner halal, penginapan, dan kalkulator anggaran tanpa perlu login.</p>
+            <p style="font-size:0.88rem;color:var(--muted);">Jelajahi destinasi alam, peta interaktif Aceh, kuliner halal, penginapan ramah Muslim, dan kalkulator anggaran tanpa perlu login.</p>
           </div>
           <div class="role-ecosystem-card" data-motion-card>
             <span class="role-pill role-traveler" style="align-self:flex-start;">Wisatawan</span>
             <h3 style="font-size:1.25rem;">Perjalanan Personal</h3>
-            <p style="font-size:0.88rem;color:var(--muted);">Simpan favorit & itinerary per akun, tulis ulasan rating destinasi, dan pantau status inquiry reservasi.</p>
-            <button type="button" class="btn btn-outline btn-sm" style="margin-top:auto;" data-action="demo-login" data-role="traveler">Coba Wisatawan</button>
+            <p style="font-size:0.88rem;color:var(--muted);">Masuk dengan Google atau email untuk menyimpan favorit &amp; itinerary per akun, menulis ulasan destinasi, dan memantau inquiry.</p>
+            <button type="button" class="btn btn-outline btn-sm" style="margin-top:auto;" data-route="auth">Masuk / Daftar</button>
           </div>
           <div class="role-ecosystem-card" data-motion-card>
             <span class="role-pill role-partner" style="align-self:flex-start;">Mitra UMKM</span>
             <h3 style="font-size:1.25rem;">Portal Bisnis Lokal</h3>
-            <p style="font-size:0.88rem;color:var(--muted);">Kelola listing kuliner & penginapan milik sendiri, ajukan verifikasi halal, dan balas inquiry wisatawan.</p>
-            <button type="button" class="btn btn-outline btn-sm" style="margin-top:auto;" data-action="demo-login" data-role="partner">Coba Mitra UMKM</button>
-          </div>
-          <div class="role-ecosystem-card" data-motion-card>
-            <span class="role-pill role-admin" style="align-self:flex-start;">Administrator</span>
-            <h3 style="font-size:1.25rem;">Command Center</h3>
-            <p style="font-size:0.88rem;color:var(--muted);">Kendali penuh CRUD seluruh konten, persetujuan antrean verifikasi halal, dan manajemen peran pengguna.</p>
-            <button type="button" class="btn btn-outline btn-sm" style="margin-top:auto;" data-action="demo-login" data-role="admin">Coba Admin</button>
+            <p style="font-size:0.88rem;color:var(--muted);">Kelola listing kuliner &amp; penginapan milik sendiri, ajukan verifikasi halal resmi, dan terima inquiry langsung dari wisatawan.</p>
+            <button type="button" class="btn btn-outline btn-sm" style="margin-top:auto;" data-route="auth">Gabung Mitra</button>
           </div>
         </div>
       </div>

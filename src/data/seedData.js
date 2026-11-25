@@ -1,35 +1,7 @@
 export function getSeedData() {
   return {
-    users: [
-      {
-        id: 'user-traveler-1',
-        name: 'Aisyah Rahma',
-        email: 'wisatawan@ranum.id',
-        password: 'password123',
-        role: 'traveler',
-        region: 'Banda Aceh',
-        joinedAt: '2026-10-15'
-      },
-      {
-        id: 'user-partner-1',
-        name: 'Koperasi Kopi & Kuliner Gayo',
-        email: 'mitra@ranum.id',
-        password: 'password123',
-        role: 'partner',
-        businessName: 'Gayo & Serambi UMKM Group',
-        region: 'Aceh Tengah',
-        joinedAt: '2026-09-20'
-      },
-      {
-        id: 'user-admin-1',
-        name: 'Teuku Farhan (Admin)',
-        email: 'admin@ranum.id',
-        password: 'password123',
-        role: 'admin',
-        region: 'Banda Aceh',
-        joinedAt: '2026-08-01'
-      }
-    ],
+    adminEmails: ['bahrisaidsaidul@gmail.com'],
+    users: [],
 
     destinations: [
       {

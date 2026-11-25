@@ -15,10 +15,10 @@ export function renderAdminPage(state, authService, helpers) {
           <div class="empty-state">
             <span class="role-pill role-admin">Role Guard · Admin Only</span>
             <h3>Akses Terbatas untuk Administrator</h3>
-            <p>Halaman Admin Command Center dilindungi oleh Role Guard. Silakan masuk menggunakan akun Admin untuk mengelola seluruh data dan menyetujui verifikasi halal.</p>
+            <p>Halaman Admin Command Center hanya dapat diakses oleh email Administrator yang terdaftar pada sistem (<code>VITE_ADMIN_EMAILS</code>).</p>
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-              <button type="button" class="btn btn-primary" data-action="demo-login" data-role="${ROLES.ADMIN}">Masuk Demo Admin</button>
-              <button type="button" class="btn btn-outline" data-route="auth">Halaman Login</button>
+              <button type="button" class="btn btn-primary" data-route="auth">Masuk dengan Akun Admin</button>
+              <button type="button" class="btn btn-outline" data-route="home">Kembali ke Beranda</button>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ export function renderAdminPage(state, authService, helpers) {
 
         ${state.adminTab === 'overview' ? renderAdminOverview(state, pendingHalal.length, t) : ''}
         ${state.adminTab === 'verifications' ? renderHalalQueue(pendingHalal, t) : ''}
-        ${state.adminTab === 'users' ? renderUsersTable(state) : ''}
+        ${state.adminTab === 'users' ? renderUsersTable(state, authService) : ''}
         ${['destinations', 'culinary', 'accommodations', 'packages'].includes(state.adminTab) ? renderAdminTable(state, state.adminTab, { t, catLabel }) : ''}
       </div>
     </section>
@@ -156,31 +156,85 @@ function renderHalalQueue(pendingList, t) {
   `;
 }
 
-function renderUsersTable(state) {
+function renderUsersTable(state, authService) {
+  const adminEmails = authService.getAllAdminEmails();
+
   return `
+    <div class="grid grid-2" style="margin-bottom:24px;">
+      <form class="info-box" id="addAdminForm">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <h3 style="font-size:1.3rem;">${ICONS.plus} Tambah Admin Baru</h3>
+          <span class="role-pill role-admin">Admin</span>
+        </div>
+        <p style="font-size:0.86rem;color:var(--muted);">Tambahkan email rekan Anda agar otomatis mendapat akses Admin saat login via <strong>Google</strong> (atau isi kata sandi opsional untuk login email).</p>
+        <div class="field-group">
+          <label for="newAdminName">Nama Admin</label>
+          <input class="input" id="newAdminName" name="name" placeholder="Contoh: Cut Dewi" required />
+        </div>
+        <div class="field-group">
+          <label for="newAdminEmail">Email Google / Login *</label>
+          <input class="input" id="newAdminEmail" name="email" type="email" placeholder="rekan.admin@gmail.com" required />
+        </div>
+        <div class="field-group">
+          <label for="newAdminPass">Kata Sandi (Opsional, min. 6 karakter)</label>
+          <input class="input" id="newAdminPass" name="password" type="password" minlength="6" placeholder="Kosongkan jika hanya login Google" />
+        </div>
+        <button type="submit" class="btn btn-primary">Tambahkan sebagai Admin</button>
+      </form>
+
+      <div class="info-box">
+        <h3 style="font-size:1.3rem;">Daftar Email Admin Aktif (${adminEmails.length})</h3>
+        <p style="font-size:0.86rem;color:var(--muted);">Setiap email di bawah ini memiliki akses penuh ke Admin Command Center.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${adminEmails
+            .map((em) => {
+              const isOwner = authService.isPrimaryOwner(em);
+              return `
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--ivory);border:1px solid var(--border);border-radius:12px;">
+                <div style="min-width:0;overflow:hidden;text-overflow:ellipsis;">
+                  <strong style="font-size:0.9rem;">${escapeHtml(em)}</strong>
+                  ${isOwner ? `<div><span class="badge badge-forest" style="margin-top:4px;">Owner Utama</span></div>` : ''}
+                </div>
+                ${
+                  isOwner
+                    ? ''
+                    : `<button type="button" class="btn btn-danger btn-sm" data-action="admin-remove-email" data-email="${escapeHtml(em)}">Cabut</button>`
+                }
+              </div>
+            `;
+            })
+            .join('')}
+        </div>
+      </div>
+    </div>
+
     <div class="table-wrap">
       <table class="data-table">
         <thead><tr><th>Nama</th><th>Email</th><th>Wilayah</th><th>Bergabung</th><th>Peran (Role)</th></tr></thead>
         <tbody>
-          ${state.data.users
-            .map(
-              (u) => `
-            <tr>
-              <td><strong>${escapeHtml(u.name)}</strong></td>
-              <td>${escapeHtml(u.email)}</td>
-              <td>${escapeHtml(u.region || '-')}</td>
-              <td>${escapeHtml(u.joinedAt || '-')}</td>
-              <td>
-                <select class="select admin-user-role-select" data-user-id="${escapeHtml(u.id)}" style="padding:6px 10px;width:auto;">
-                  <option value="${ROLES.TRAVELER}" ${u.role === ROLES.TRAVELER ? 'selected' : ''}>Wisatawan</option>
-                  <option value="${ROLES.PARTNER}" ${u.role === ROLES.PARTNER ? 'selected' : ''}>Mitra UMKM</option>
-                  <option value="${ROLES.ADMIN}" ${u.role === ROLES.ADMIN ? 'selected' : ''}>Admin</option>
-                </select>
-              </td>
-            </tr>
-          `
-            )
-            .join('')}
+          ${
+            state.data.users.length
+              ? state.data.users
+                  .map(
+                    (u) => `
+                <tr>
+                  <td><strong>${escapeHtml(u.name)}</strong></td>
+                  <td>${escapeHtml(u.email)}</td>
+                  <td>${escapeHtml(u.region || '-')}</td>
+                  <td>${escapeHtml(u.joinedAt || '-')}</td>
+                  <td>
+                    <select class="select admin-user-role-select" data-user-id="${escapeHtml(u.id)}" style="padding:6px 10px;width:auto;" ${authService.isPrimaryOwner(u.email) ? 'disabled' : ''}>
+                      <option value="${ROLES.TRAVELER}" ${u.role === ROLES.TRAVELER ? 'selected' : ''}>Wisatawan</option>
+                      <option value="${ROLES.PARTNER}" ${u.role === ROLES.PARTNER ? 'selected' : ''}>Mitra UMKM</option>
+                      <option value="${ROLES.ADMIN}" ${u.role === ROLES.ADMIN ? 'selected' : ''}>Admin</option>
+                    </select>
+                  </td>
+                </tr>
+              `
+                  )
+                  .join('')
+              : `<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">Belum ada pengguna terdaftar selain akun yang sedang login.</td></tr>`
+          }
         </tbody>
       </table>
     </div>

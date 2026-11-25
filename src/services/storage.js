@@ -42,8 +42,25 @@ export const StorageService = {
       const culMig = migrateSeedImages(parsed.culinary, seed.culinary);
       const pkgMig = migrateSeedImages(parsed.packages, seed.packages);
 
+      const demoUserIds = ['user-traveler-1', 'user-partner-1', 'user-admin-1'];
+      const cleanedUsers = Array.isArray(parsed.users)
+        ? parsed.users.filter((u) => !demoUserIds.includes(u.id))
+        : [];
+      const removedDemos = Array.isArray(parsed.users) && cleanedUsers.length !== parsed.users.length;
+      const currentUid = demoUserIds.includes(parsed.preferences?.currentUserId)
+        ? null
+        : parsed.preferences?.currentUserId || null;
+
+      const mergedAdmins = Array.from(
+        new Set([
+          ...seed.adminEmails,
+          ...(Array.isArray(parsed.adminEmails) ? parsed.adminEmails : [])
+        ].map((e) => String(e).trim().toLowerCase()).filter(Boolean))
+      );
+
       const data = {
-        users: Array.isArray(parsed.users) && parsed.users.length ? parsed.users : seed.users,
+        adminEmails: mergedAdmins,
+        users: cleanedUsers,
         destinations: destMig.items,
         culinary: culMig.items,
         accommodations: Array.isArray(parsed.accommodations) ? parsed.accommodations : seed.accommodations,
@@ -52,9 +69,9 @@ export const StorageService = {
         favorites: Array.isArray(parsed.favorites) ? parsed.favorites : seed.favorites,
         reviews: Array.isArray(parsed.reviews) ? parsed.reviews : seed.reviews,
         inquiries: Array.isArray(parsed.inquiries) ? parsed.inquiries : seed.inquiries,
-        preferences: parsed.preferences ? { ...seed.preferences, ...parsed.preferences } : seed.preferences
+        preferences: parsed.preferences ? { ...seed.preferences, ...parsed.preferences, currentUserId: currentUid } : seed.preferences
       };
-      if (destMig.changed || culMig.changed || pkgMig.changed) {
+      if (destMig.changed || culMig.changed || pkgMig.changed || removedDemos) {
         this.save(data);
       }
       return data;
