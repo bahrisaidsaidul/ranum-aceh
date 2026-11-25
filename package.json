@@ -1,0 +1,21 @@
+{
+  "name": "ranum-aceh-platform",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "RANUM — Aceh Nature & Halal Journey. Production-ready modular Vite + Vanilla JS web application.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "leaflet": "^1.9.4",
+    "lenis": "^1.1.18",
+    "motion": "^11.11.13"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}
