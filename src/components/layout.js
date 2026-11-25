@@ -96,36 +96,6 @@ export function renderNavigation(state, authService, dataService, { t, roleLabel
   document.querySelectorAll('.lang-btn').forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
-
-  // Mobile Bottom Nav
-  const bottomEl = document.getElementById('mobileBottomNav');
-  if (bottomEl) {
-    const lastTab =
-      role === ROLES.ADMIN
-        ? { route: 'admin', label: 'Admin', icon: ICONS.shield }
-        : role === ROLES.PARTNER
-          ? { route: 'partner', label: 'Mitra', icon: ICONS.store }
-          : { route: 'planner', label: t('nav_planner'), icon: ICONS.calendar };
-
-    const mbnItems = [
-      { route: 'home', label: t('nav_home'), icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>' },
-      { route: 'explore', label: t('nav_explore'), icon: ICONS.search },
-      { route: 'culinary', label: t('nav_culinary'), icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>' },
-      { route: 'stay', label: t('nav_stay'), icon: ICONS.mosque },
-      lastTab
-    ];
-
-    bottomEl.innerHTML = `<div class="mobile-bottom-nav-inner">${mbnItems
-      .map(
-        (it) => `
-      <button type="button" class="mbn-item ${state.route === it.route ? 'active' : ''}" data-route="${it.route}">
-        ${it.icon}
-        <span>${escapeHtml(it.label)}</span>
-      </button>
-    `
-      )
-      .join('')}</div>`;
-  }
 }
 
 export function renderFooter({ t }) {

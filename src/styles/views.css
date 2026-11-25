@@ -292,11 +292,6 @@
 @media (max-width: 768px) {
   :root { --nav-height: 64px; }
 
-  body {
-    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .mobile-bottom-nav { display: block; }
   .container { padding: 0 16px; }
   .section { padding: 48px 0; }
   .section-sm { padding: 28px 0; }
@@ -368,7 +363,7 @@
   .modal-box { padding: 20px 18px; border-radius: 20px 20px 14px 14px; max-height: 86vh; }
 
   .toast-container {
-    bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     left: 16px;
     right: 16px;
   }
